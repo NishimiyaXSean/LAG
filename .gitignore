@@ -1,4 +1,5 @@
 # ignore files
+CLAUDE.md
 test.py
 results
 runs

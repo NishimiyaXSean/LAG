@@ -164,7 +164,7 @@ class DummyVecEnv(VecEnv):
         for env in self.envs:
             env.close()
 
-    def render(self, mode, filepath):
+    def render(self, mode, filepath, **kwargs):
         if mode == 'txt':
             self.envs[0].render(mode, filepath)
 
