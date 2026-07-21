@@ -207,6 +207,15 @@ class BaseEnv(gymnasium.Env):
                     f.write("FileType=text/acmi/tacview\n")
                     f.write("FileVersion=2.1\n")
                     f.write("0,ReferenceTime=2020-04-01T00:00:00Z\n")
+                    # Register each aircraft at its initial position so Tacview
+                    # knows about them before the first frame (prevents 0→t0 teleport)
+                    for sim in self._jsbsims.values():
+                        lon, lat, alt = sim.get_geodetic()
+                        roll, pitch, yaw = sim.get_rpy() * 180 / np.pi
+                        name = sim.model.upper() if hasattr(sim, 'model') else sim.uid
+                        color = sim.color if hasattr(sim, 'color') else 'Blue'
+                        f.write(f"{sim.uid},T={lon}|{lat}|{alt}|{roll}|{pitch}|{yaw},"
+                                f"Type=Air+FixedWing,Name={name},Color={color}\n")
                 self._create_records = True
             with open(filepath, mode='a', encoding='utf-8-sig') as f:
                 timestamp = self.current_step * self.time_interval

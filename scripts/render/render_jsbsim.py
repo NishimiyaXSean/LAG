@@ -28,6 +28,7 @@ def make_render_env(all_args):
                 logging.error("Can not support the " + all_args.env_name + "environment.")
                 raise NotImplementedError
             env.seed(all_args.seed + rank * 1000)
+            env._render_mode = True  # skip side-shuffle for consistent Tacview
             return env
         return init_env
     if all_args.env_name == "MultipleCombat":
