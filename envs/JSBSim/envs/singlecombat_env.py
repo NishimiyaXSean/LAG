@@ -37,6 +37,9 @@ class SingleCombatEnv(BaseEnv):
     def reset(self) -> np.ndarray:
         self.current_step = 0
         self.reset_simulators()
+        # Populate initial geodetic cache so first Tacview frame is correct
+        for sim in self.agents.values():
+            sim.run()
         self.task.reset(self)
         obs = self.get_obs()
         return self._pack(obs)

@@ -25,6 +25,9 @@ class SingleControlEnv(BaseEnv):
     def reset(self):
         self.current_step = 0
         self.reset_simulators()
+        # Populate initial geodetic cache so first Tacview frame is correct
+        for sim in self.agents.values():
+            sim.run()
         self.heading_turn_counts = 0
         self.task.reset(self)
         obs = self.get_obs()
