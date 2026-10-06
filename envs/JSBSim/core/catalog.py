@@ -547,12 +547,19 @@ class MixedCatalog(dict):
         """Add to Catalog jsbsim properties from jbsbsim_props
 
         Args:
-            jsbsim_props (list): list of 'name_jsbsim (access)' of jsbsim properties
+            jsbsim_props: iterable of 'name_jsbsim (access)' strings. jsbsim >= 1.2
+                returns the whole catalog as a single newline-separated string
+                from FGFDMExec.query_property_catalog(), so accept that as well.
         """
+        if isinstance(jsbsim_props, str):
+            jsbsim_props = jsbsim_props.splitlines()
         for jsbsim_prop in jsbsim_props:
             if jsbsim_prop.strip() == "":
                 continue  # skip empty line
-            [name_jsbsim, access] = jsbsim_prop.split(" ")
+            parts = jsbsim_prop.split()
+            if len(parts) < 2:
+                continue  # skip lines without an access flag
+            name_jsbsim, access = parts[0], parts[1]
             access = re.sub(r"[\(\)]", "", access)  # remove parenthesis from the flag
             name = re.sub(r"_$", "", re.sub(r"[\-/\]\[]+", "_", name_jsbsim))  # get property name from jsbsim name
             if name not in self:
